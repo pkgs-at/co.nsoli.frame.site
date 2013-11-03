@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build-all">
+	<!-- project settings -->
+	<property name="name" value="site.main"/>
+	<property name="target" value="develop"/>
+	<!-- directories -->
+	<property name="tmpdir" value="./tmp"/>
+	<!-- others -->
+	<property name="javacexcludes" value="**/.svn"/>
+	<property name="javacdebug" value="true"/>
+	<property file="build.properties"/>
+	<!-- targets -->
+	<target name="build-jar">
+		<mkdir dir="${tmpdir}"/>
+		<javac srcdir="./src" encoding="UTF-8" destdir="${tmpdir}" excludes="${javacexcludes}" listfiles="true" includeantruntime="false" debug="${javacdebug}">
+			<classpath>
+				<fileset dir="./env">
+					<include name="*.jar"/>
+				</fileset>
+				<fileset dir="./lib">
+					<include name="*.jar"/>
+					<exclude name="${name}.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+		<copy todir="${tmpdir}">
+			<fileset dir="./src" excludes="${javacexcludes},**/*.java"/>
+		</copy>
+		<jar destfile="./lib/${name}.jar">
+			<fileset dir="${tmpdir}"/>
+		</jar>
+		<delete dir="${tmpdir}"/>
+	</target>
+	<target name="build-war" depends="build-jar">
+		<mkdir dir="${tmpdir}"/>
+		<java jar="./env/co.nsoli.frame-1.0.0.jar" fork="true" spawn="false" failonerror="true">
+			<arg value="-server"/>
+			<arg value="-base"/><arg value="./"/>
+			<arg value="-output"/><arg value="${tmpdir}"/>
+		</java>
+		<mkdir dir="${tmpdir}/WEB-INF"/>
+		<copy file="web.${target}.xml" tofile="${tmpdir}/WEB-INF/web.xml"/>
+		<mkdir dir="${tmpdir}/WEB-INF/classes"/>
+		<mkdir dir="${tmpdir}/WEB-INF/lib"/>
+		<copy todir="${tmpdir}/WEB-INF/lib">
+			<fileset dir="./lib">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+		<jar destfile="./${target}.war" basedir="${tmpdir}"/>
+		<delete dir="${tmpdir}"/>
+	</target>
+	<target name="build-all">
+		<antcall target="build-war">
+			<param name="target" value="release"/>
+		</antcall>
+		<mode file="release.war" tofile="co.nsoli.frame.war" />
+		<!-- antcall target="build-war">
+			<param name="target" value="develop"/>
+		</antcall -->
+		<!-- antcall target="build-war">
+			<param name="target" value="dummy"/>
+		</antcall -->
+	</target>
+</project>

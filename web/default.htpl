@@ -1,0 +1,6 @@
+[? extends layout.htpl ?]
+
+[? layout_body { ?]
+[? base ?]
+<h1>CO.NSOLI.FRAME</h1>
+[? } layout_body ?]

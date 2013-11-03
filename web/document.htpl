@@ -1,0 +1,194 @@
+[? extends layout.htpl ?]
+
+[? head_style { ?]
+[? base ?]
+<link rel="stylesheet" href="~/style/marked.css?[= tmpl.timestamp =]" media="all"/>
+[? } head_style ?]
+
+[? head_script { ?]
+[? base ?]
+<script src="~/script/marked-0.2.9.js?[= tmpl.timestamp =]"></script>
+[? } head_script ?]
+
+[? layout_body { ?]
+[? base ?]
+<section id="page_body" class="pure-g">
+<section id="page_side" class="pure-u-1-4">
+<h1>ドキュメント</h1>
+<script type="application/x-template" class="_page_index">{%/*<![CDATA[*/%}
+<section id="side_index" class="_page_index">
+<ul class="depth_01 status_public">
+{%
+(function() {
+	var render = function($documents) {
+		$documents.each(function() {
+			var $this = $(this);
+			var path = $this.attr('path');
+			var link = page.link({ path: path, section: null });
+			var chapter = $this.attr('chapter');
+			var title = $this.attr('title');
+			var depth = parseInt($this.attr('depth'), 10);
+			var status = $this.attr('status') || 'public';
+			var $children = $this.children('document');
+			var li_class = 'depth_' + depth.pad(2) + ' status_' + status;
+			var ul_class = 'depth_' + (depth + 1).pad(2) + ' status_' + status;
+
+			if ($children.length <= 0) {
+				if (page.context.path == path) {
+ %}
+<li class="leaf current {= li_class =}"><span class="chapter">{= chapter =}&nbsp;</span>{= title =}</li>
+{%
+				}
+				else {
+ %}
+<li class="leaf other {= li_class =}"><a href="{= link =}"><span class="chapter">{= chapter =}&nbsp;</span>{= title =}</a></li>
+{%
+				}
+			}
+			else {
+				if (page.context.path == path) {
+ %}
+<li class="node expanded current {= li_class =}"><span class="chapter">{= chapter =}&nbsp;</span>{= title =}<ul class="{= ul_class =}">
+{% render($children); %}
+</ul></li>
+{%
+				}
+				else if (depth < 2 || (page.context.path || '').startsWith(path + '/')) {
+ %}
+<li class="node expanded other {= li_class =}"><a href="{= link =}"><span class="chapter">{= chapter =}&nbsp;</span>{= title =}</a><ul class="{= ul_class =}">
+{% render($children); %}
+</ul></li>
+{% 
+				}
+				else {
+ %}
+<li class="node collapsed other {= li_class =}"><a href="{= link =}"><span class="chapter">{= chapter =}&nbsp;</span>{= title =}</a></li>
+{% 
+				}
+			}
+		});
+	};
+	render($documents.children('document'));
+})();
+ %}
+</ul>
+</section><!-- #side_index -->
+{%/*]]>*/%}</script>
+</section><!-- page_side -->
+<section id="page_main" class="pure-u-3-4">
+<section id="page_content" class="_page_stage">
+<script type="application/x-template" class="_section_index">{%/*<![CDATA[*/%}
+<ul>
+{% sections.each(function(section) { %}
+<li><a href="{= page.link({ section: section.name }) =}">{@ section.html @}</a></li>
+{% }); %}
+</ul>
+{%/*]]>*/%}</script>
+<script type="application/x-template" class="_back_to_top">{%/*<![CDATA[*/%}
+<p class="back_to_top"><a href="{= page.link({ section: '_top' }) =}"><img src="~/image/icon/black/arrow_up_12x12.png">&nbsp;先頭へ戻る</a></p>
+{%/*]]>*/%}</script>
+<script type="application/x-template" class="_scene _cover">{%/*<![CDATA[*/%}
+<section id="scene_cover" class="scene _scene">
+<h1>{= $document.attr('chapter') =}&nbsp;{= $document.attr('title') =}</h1>
+<section class="marked section_index _section_index"></section>
+<section class="marked _marked"></section>
+<section id="cover_index">
+<h1>目次</h1>
+<ul class="depth_01 status_public">
+{%
+(function() {
+	var current_depth = parseInt($document.attr('depth'), 10);
+	var render = function($documents) {
+		$documents.each(function() {
+			var $this = $(this);
+			var path = $this.attr('path');
+			var link = page.link({ path: path, section: null });
+			var chapter = $this.attr('chapter');
+			var title = $this.attr('title');
+			var depth = parseInt($this.attr('depth'), 10) - current_depth;
+			var status = $this.attr('status') || 'public';
+			var $children = $this.children('document');
+			var li_class = 'depth_' + depth.pad(2) + ' status_' + status;
+			var ul_class = 'depth_' + (depth + 1).pad(2) + ' status_' + status;
+
+			if ($children.length <= 0) {
+ %}
+<li class="leaf other {= li_class =}"><a href="{= link =}">{= chapter =}&nbsp;{= title =}</a></li>
+{%
+			}
+			else if (depth < 2) {
+ %}
+<li class="node expanded other {= li_class =}"><a href="{= link =}">{= chapter =}&nbsp;{= title =}</a><ul class="{= ul_class =}">
+{% render($children); %}
+</ul></li>
+{% 
+			}
+			else {
+ %}
+<li class="leaf other {= li_class =}"><a href="{= link =}">{= chapter =}&nbsp;{= title =}</a></li>
+{%
+			}
+		});
+	};
+	render($document.children('document'));
+})();
+ %}
+</ul>
+</section><!-- #cover_index -->
+</section><!-- #scene_cover -->
+{%/*]]>*/%}</script>
+<script type="application/x-template" class="_scene _content">{%/*<![CDATA[*/%}
+<section id="scene_content" class="scene _scene">
+<h1>{= $document.attr('chapter') =}&nbsp;{= $document.attr('title') =}</h1>
+<section class="marked section_index _section_index"></section>
+<section class="marked _marked"></section>
+</section><!-- #scene_content -->
+{%/*]]>*/%}</script>
+<section id="scene_root" class="scene">
+<h1>ドキュメントの一覧</h1>
+</section><!-- #scene_root -->
+<section id="scene_not_found" class="scene">
+<h1>ドキュメントは削除されたか見つかりません</h1>
+</section><!-- #scene_not_found -->
+<script type="application/x-template" class="_index">{%/*<![CDATA[*/%}
+<section id="main_index" class="_index">
+<ul class="depth_01 status_public">
+{%
+(function() {
+	var render = function($documents) {
+		$documents.each(function() {
+			var $this = $(this);
+			var path = $this.attr('path');
+			var link = page.link({ path: path, section: null });
+			var chapter = $this.attr('chapter');
+			var title = $this.attr('title');
+			var depth = parseInt($this.attr('depth'), 10);
+			var status = $this.attr('status') || 'public';
+			var $children = $this.children('document');
+			var li_class = 'depth_' + depth.pad(2) + ' status_' + status;
+			var ul_class = 'depth_' + (depth + 1).pad(2) + ' status_' + status;
+
+			if ($children.length <= 0) {
+ %}
+<li class="leaf other {= li_class =}"><a href="{= link =}">{= chapter =}&nbsp;{= title =}</a></li>
+{%
+			}
+			else {
+ %}
+<li class="node expanded other {= li_class =}"><a href="{= link =}">{= chapter =}&nbsp;{= title =}</a><ul class="{= ul_class =}">
+{% render($children); %}
+</ul></li>
+{% 
+			}
+		});
+	};
+	render($documents.children('document'));
+})();
+ %}
+</ul>
+</section><!-- #main_index -->
+{%/*]]>*/%}</script>
+</section><!-- #page_content -->
+</section><!-- #page_main -->
+</section><!-- #page_body -->
+[? } layout_body ?]

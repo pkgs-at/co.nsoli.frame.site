@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja-JP" data-path="[= tmpl.path =]" data-date="[= tmpl.timestamp =]">
+<head>[? head { ?]
+<base href="[= sitemap.base =]" id="frame_base"/>
+<script><!--//--><![CDATA[//><!--
+(function() { var d, i, b, p; d = document.getElementsByTagName('html')[0].getAttribute('data-path').split('/').length - 1; p = location.toString().split('/'); for (i = 0; i < d; i ++) p.pop(); b = ''; for (i in p) b += p[i] + '/'; document.getElementById('frame_base').href = b; })();
+//--><!]]></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>[% if (sitemap.page.title) { %][= sitemap.page.title =]&nbsp;|&nbsp;[% } %]co.nsoli.frame</title>
+[? head_style { ?]
+<link rel="stylesheet" href="~/style/pure-0.3.0.css?[= tmpl.timestamp =]" media="all"/>
+[? } head_style ?]
+<link rel="stylesheet" href="[% sitemap.base.substring(1).chars(function(char) { if (char == '/') { %]../[% } }); %][= tmpl.path.substring(1).replace(/\.html$/, '.css') =]?[= tmpl.timestamp =]" media="all"/>
+[? head_script { ?]
+<!--[if lt IE 9]>
+<script src="~/script/html5shiv-3.7.0.js?[= tmpl.timestamp =]"></script>
+<script src="~/script/html5shiv.printshiv-3.7.0.js?[= tmpl.timestamp =]"></script>
+<![endif]-->
+<script src="~/script/at.pkgs.js?[= tmpl.timestamp =]"></script>
+<script src="~/script/at.pkgs.candidate.js?[= tmpl.timestamp =]"></script>
+<script src="~/script/sugar-1.4.1.js?[= tmpl.timestamp =]"></script>
+<script src="~/script/jquery-1.10.2.js?[= tmpl.timestamp =]"></script>
+<script src="~/script/jquery.at.pkgs.js?[= tmpl.timestamp =]"></script>
+<script src="~/script/jquery.migrate-1.2.1.js?[= tmpl.timestamp =]"></script>
+<script src="~/script/jquery.ba-hashchange-1.3.0.js?[= tmpl.timestamp =]"></script>
+<script src="~/script/co.nsoli.js?[= tmpl.timestamp =]"></script>
+[? } head_script ?]
+[? } head ?]</head>
+<body id="page_[= sitemap.page.id =]">[? body { ?]
+<div id="frame_error_javascript">
+<script><!--//--><![CDATA[//><!--
+(function() { document.getElementById('frame_error_javascript').style.display='none'; })();
+//--><!]]></script>
+[? frame_error_javascript { ?]
+<p>お使いのブラウザのJavascriptを有効にしてください。</p>
+[? } frame_error_javascript ?]
+</div>
+<div id="frame_content" style="display:none;">
+[? frame_content { ?]
+<script><!--//--><![CDATA[//><!--
+(function() { document.getElementById('frame_content').style.display='block'; })();
+//--><!]]></script>
+[? } frame_content ?]
+</div>
+<script src="[% sitemap.base.substring(1).chars(function(char) { if (char == '/') { %]../[% } }); %][= tmpl.path.substring(1).replace(/\.html$/, '.js') =]?[= tmpl.timestamp =]"></script>
+[? } body ?]</body>
+</html>

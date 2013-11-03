@@ -1,0 +1,38 @@
+/*
+ * base script
+ */
+at.pkgs.Log.get('base').trap(function(_root_) {
+	var _log_;
+
+	_log_ = arguments.callee.log;
+	this.PageContext = (function(_namespace_) {
+		var _class_;
+
+		_class_ = co.nsoli.PageContext.extend((
+			function(instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+			}
+		), { /* prototype */
+		});
+		return _class_;
+	})(this);
+	this.Page = (function(_namespace_) {
+		var _class_;
+
+		_class_ = co.nsoli.Page.extend((
+			function(context, instance) {
+				instance = instance || this;
+				this.parent.self(context, instance);
+				instance.base_href = $('base').attr('href');
+			}
+		), { /* prototype */
+			canvas_supported: null,
+			base_href: null,
+			base_redirect: function(relative) {
+				_root_.location.href = this.base_href + relative;
+			}
+		});
+		return _class_;
+	})(this);
+}, false, true).call((base = this.base || {}), this);

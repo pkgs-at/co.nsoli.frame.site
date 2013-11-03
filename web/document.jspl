@@ -1,0 +1,281 @@
+/*
+[? include layout.jspl ?]
+/*
+ * script of document.html
+ */
+at.pkgs.Log.get('page').trap(function(_root_) {
+	var _log_;
+
+	_log_ = arguments.callee.log;
+	this.PageContext = (function(_namespace_) {
+		var _class_;
+
+		_class_ = _namespace_.PageContext.extend((
+			function(instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+				instance.keys.push('path');
+				instance.keys.push('section');
+				instance.path = void 0;
+			}
+		), { /* prototype */
+			path: null,
+			section: null,
+			get_path: function(parameter) {
+				var value;
+
+				value = parameter !== void 0 ? parameter : this.path;
+				return value ? value : null;
+			},
+			set_path: function(value) {
+				this.path = value ? value : null;
+			},
+			same_path: function(value) {
+				if (this.path === void 0) return false;
+				value = value ? value : null;
+				return this.path === value;
+			},
+			get_section: function(parameter) {
+				return parameter !== void 0 ? parameter : this.section;
+			},
+			set_section: function(value) {
+				this.section = value ? value : null;
+			}
+		});
+		return _class_;
+	})(this);
+	this.Stage = (function(_namespace_) {
+		var _class_;
+
+		_class_ = co.nsoli.Partial.extend((
+			function($element, instance) {
+				instance = instance || this;
+				this.parent.self($element, instance);
+				instance._section_index = instance.$.find('script._section_index').at_pkgs_template();
+				instance._back_to_top = instance.$.find('script._back_to_top').at_pkgs_template();
+				instance.$scene_cover = instance.$.find('script._scene._cover');
+				instance._scene_cover = instance.$scene_cover.at_pkgs_template();
+				instance.$scene_content = instance.$.find('script._scene._content');
+				instance._scene_content = instance.$scene_content.at_pkgs_template();
+			}
+		), { /* prototype */
+			_section_index: null,
+			_back_to_top: null,
+			$scene_cover: null,
+			_scene_cover: null,
+			$scene_content: null,
+			_scene_content: null,
+			process: null,
+			initialize: function(page, container, instance) {
+				instance = instance || this;
+				this.parent.initialize(page, container, instance);
+				if (!this.immediate('initialize')) return;
+				instance.page.$documents.get(function($documents) {
+					var $index;
+					var _index;
+
+					$index = instance.$.find('._index');
+					_index = $index.at_pkgs_template();
+					$index.after(_index({
+						$documents: $documents }));
+				});
+			},
+			scene: function(name) {
+				this.$.find('._scene:not(script)').remove();
+				this.$.replaceClass(/scene_.*/, 'scene_' + name);
+			},
+			section: function(name) {
+				var id;
+				var element;
+				var offset;
+
+				if (!name || name == '_top') {
+					this.page.scrollToTop();
+					return;
+				}
+				id = encodeURIComponent('section_' + name);
+				element = window.document.getElementById(id);
+				if (!element) return;
+				offset = $(element).offset().top;
+				$('html,body').animate({ scrollTop: offset }, 'slow', 'swing');
+			},
+			render: function(data) {
+				var instance;
+				var $marked;
+				var list;
+
+				instance = this;
+				$marked = $('._marked');
+				$marked.html(marked(data));
+				$marked.find('h1, h2, h3, h4, h5, h6').each(function() {
+					var $this;
+
+					$this = $(this);
+					$this.attr('id', encodeURIComponent('section_' + $this.text()));
+				});
+				list = new Array();
+				$marked.find('h1').each(function() {
+					var $this;
+					var section;
+					var link;
+					var html;
+
+					$this = $(this);
+					list.push({
+						name: decodeURIComponent($this.attr('id').substring(8)),
+						html: $this.html() });
+					$this.before(instance._back_to_top());
+				});
+				$marked.append(this._back_to_top());
+				this.$.find('._section_index').html(this._section_index({
+					'sections': list }));
+				this.section(this.page.context.section);
+			},
+			cover: function($document) {
+				var instance;
+				var introduction;
+				var path;
+
+				instance = this;
+				this.scene('cover');
+				this.$scene_cover.after(this._scene_cover({
+					$document: $document }));
+				introduction = $document.attr('introduction');
+				if (!introduction) return;
+				if (this.process) this.process.abort();
+				this.process = null;
+				path = 'document' + this.page.context.path + '/' + introduction + '.md';
+				this.process = $.get(path, function(data) {
+					instance.process = null;
+					instance.render(data);
+				});
+			},
+			content: function($document) {
+				var instance;
+				var path;
+
+				instance = this;
+				this.scene('content');
+				this.$scene_content.after(this._scene_content({
+					$document: $document }));
+				if (this.process) this.process.abort();
+				this.process = null;
+				path = 'document' + this.page.context.path + '.md';
+				this.process = $.get(path, function(data) {
+					instance.process = null;
+					instance.render(data);
+				});
+			},
+			update: function() {
+				var instance;
+
+				instance = this;
+				this.page.$documents.get(function($documents) {
+					var path;
+					var selector;
+					var $document;
+
+					if (!instance.page.context.path) {
+						instance.scene('root');
+						return;
+					}
+					path = instance.page.context.path;
+					selector = 'documents';
+					(path.match(/\w+/g) || new Array()).each(function(part) {
+						selector += '>document[name="' + part + '"]';
+					});
+					$document = $documents.find(selector);
+					if ($document.length <= 0) {
+						instance.scene('not_found');
+						return;
+					}
+					if ($document.children('document').length > 0) {
+						instance.cover($document);
+						return;
+					}
+					instance.content($document);
+				});
+			}
+		});
+		return _class_;
+	})(this);
+	this.Page = (function(_namespace_) {
+		var _class_;
+
+		_class_ = _namespace_.Page.extend((
+			function(context, instance) {
+				instance = instance || this;
+				this.parent.self(context, instance);
+				instance.$documents = new at.pkgs.OnceUpon(function() {
+					var holder;
+
+					holder = this;
+					return $.get('document.xml', function(data) {
+						var $documents;
+						var process;
+
+						$documents = $(data).find('documents');
+						process = function($documents, stack) {
+							var parent;
+							var index;
+
+							parent = stack.last();
+							index = 0;
+							$documents.each(function() {
+								var $this;
+								var $children;
+								var data;
+								var stacked;
+
+								$this = $(this);
+								$children = $this.children('document');
+								data = new Object();
+								data.index = index ++;
+								data.chapter = parent ? parent.chapter : '';
+								data.chapter += index + '.';
+								data.path = parent ? parent.path : '';
+								data.path += '/' + $this.attr('name');
+								$this.attr('index', data.index);
+								$this.attr('chapter', data.chapter);
+								$this.attr('path', data.path);
+								$this.attr('depth', stack.length + 1);
+								if ($children.length <= 0) return;
+								stacked = stack.clone();
+								stacked.push(data);
+								process($children, stacked);
+							});
+						};
+						process($documents.children('document'), new Array());
+						holder.set($documents);
+					});
+				});
+				instance.$documents.get();
+				instance.add(instance.stage = new _namespace_.Stage($('._page_stage')));
+				instance.refresh.bind(function() {
+					if (instance.context.changed('section')) {
+						instance.stage.section(instance.context.section);
+					}
+					if (instance.context.changed('path')) {
+						instance.$documents.get(function($documents) {
+							var $index;
+							var _index;
+
+							$index = $('script._page_index');
+							_index = $index.at_pkgs_template();
+							$('._page_index:not(script)').remove();
+							$index.after(_index({
+								$documents: $documents }));
+							instance.stage.update();
+						});
+					}
+				});
+			}
+		), { /* prototype */
+			$documents: null,
+			stage: null
+		});
+		return _class_;
+	})(this);
+	_root_.page = new this.Page(new this.PageContext());
+	_root_.page.initialize();
+}, false, true).call((base = this.base || {}), this);

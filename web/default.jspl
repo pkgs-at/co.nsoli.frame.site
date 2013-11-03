@@ -1,0 +1,36 @@
+/*
+[? include layout.jspl ?]
+/*
+ * script of default.html
+ */
+at.pkgs.Log.get('page').trap(function(_root_) {
+	var _log_;
+
+	_log_ = arguments.callee.log;
+	this.PageContext = (function(_namespace_) {
+		var _class_;
+
+		_class_ = _namespace_.PageContext.extend((
+			function(instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+			}
+		), { /* prototype */
+		});
+		return _class_;
+	})(this);
+	this.Page = (function(_namespace_) {
+		var _class_;
+
+		_class_ = _namespace_.Page.extend((
+			function(context, instance) {
+				instance = instance || this;
+				this.parent.self(context, instance);
+			}
+		), { /* prototype */
+		});
+		return _class_;
+	})(this);
+	_root_.page = new this.Page(new this.PageContext());
+	_root_.page.initialize();
+}, false, true).call((base = this.base || {}), this);

@@ -1,0 +1,42 @@
+[%
+var sitemap;
+
+sitemap = { base: '/', pages: {} };
+sitemap.pages.default = {
+	link: 'default.html',
+	title: null };
+sitemap.pages.document = {
+	link: 'document.html',
+	title: 'ドキュメント' };
+Object.keys(sitemap.pages).each(function(id) {
+	page = sitemap.pages[id];
+	page.id = id;
+	if (sitemap.base + page.link != tmpl.path) return;
+	sitemap.page = page;
+});
+ %]
+
+[? extends base.htpl ?]
+
+[? frame_content { ?]
+<section id="layout_header" class="pure-menu pure-menu-open pure-menu-horizontal">
+[? layout_header { ?]
+<h1 class="pure-menu-heading"><a href="[= sitemap.pages.default.link =]">co.nsoli.frame</a></h1>
+<ul>
+[% ['document'].each(function(id) { %]
+<li><a href="[= sitemap.pages[id].link =]">[= sitemap.pages[id].title =]</a></li>
+[% }); %]
+</ul>
+[? } layout_header ?]
+</section><!-- #layout_header -->
+<section id="layout_body">
+[? layout_body { ?]
+[? } layout_body ?]
+</section><!-- #layout_body -->
+<section id="layout_footer">
+[? layout_footer { ?]
+<address>Copyright &copy; 2009-2013, Architector Inc., Japan</address>
+[? } layout_footer ?]
+</section><!-- #layout_footer -->
+[? base ?]
+[? } frame_content ?]
