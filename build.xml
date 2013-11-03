@@ -54,7 +54,7 @@
 		<antcall target="build-war">
 			<param name="target" value="release"/>
 		</antcall>
-		<mode file="release.war" tofile="co.nsoli.frame.war" />
+		<move file="release.war" tofile="${releasefilename}" />
 		<!-- antcall target="build-war">
 			<param name="target" value="develop"/>
 		</antcall -->

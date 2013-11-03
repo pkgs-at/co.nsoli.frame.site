@@ -14,7 +14,7 @@
 [? base ?]
 <section id="page_body" class="pure-g">
 <section id="page_side" class="pure-u-1-4">
-<h1>ドキュメント</h1>
+<h1><a href="[= sitemap.pages.document.link =]">ドキュメント</a></h1>
 <script type="application/x-template" class="_page_index">{%/*<![CDATA[*/%}
 <section id="side_index" class="_page_index">
 <ul class="depth_01 status_public">
