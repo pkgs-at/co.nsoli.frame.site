@@ -130,7 +130,6 @@
 			name="hint"
 			title="ヒント">
 		<document
-				status="unavailable"
 				name="indexee"
 				title="検索エンジン対応">
 		</document>
