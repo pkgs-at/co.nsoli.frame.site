@@ -24,13 +24,26 @@ at.pkgs.Log.get('base').trap(function(_root_) {
 			function(context, instance) {
 				instance = instance || this;
 				this.parent.self(context, instance);
+				instance.loading = new at.pkgs.OnceAfterAll();
+				instance.loading.enter();
+				instance.loading.bind(function() {
+					$('body').addClass('page_initialized');
+				});
 				instance.base_href = $('base').attr('href');
 			}
 		), { /* prototype */
-			canvas_supported: null,
+			loading: null,
 			base_href: null,
 			base_redirect: function(relative) {
 				_root_.location.href = this.base_href + relative;
+			},
+			initialize: function(instance) {
+				instance = instance || this;
+				this.parent.initialize(instance);
+				if (!this.immediate('initialize')) return;
+				_root_.setTimeout(function(){
+					instance.loading.leave();
+				}, 10);
 			}
 		});
 		return _class_;

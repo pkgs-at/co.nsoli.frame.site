@@ -490,11 +490,13 @@
 			 * @returns {at.pkgs.EventBinder} イベントバインダ.
 			 */
 			fire: function() {
+				var handlers;
 				var index;
 				var handler;
 
-				for (index = 0; index < this.handlers.length; index ++) {
-					handler = this.handlers[index];
+				handlers = this.handlers.concat();
+				for (index = 0; index < handlers.length; index ++) {
+					handler = handlers[index];
 					if (handler.apply(handler, arguments) === false) break;
 				}
 				return this;

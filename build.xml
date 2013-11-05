@@ -1,65 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="build-all">
-	<!-- project settings -->
-	<property name="name" value="site.main"/>
-	<property name="target" value="develop"/>
-	<!-- directories -->
-	<property name="tmpdir" value="./tmp"/>
-	<!-- others -->
-	<property name="javacexcludes" value="**/.svn"/>
-	<property name="javacdebug" value="true"/>
+<project default="build-default">
 	<property file="build.properties"/>
-	<!-- targets -->
-	<target name="build-jar">
-		<mkdir dir="${tmpdir}"/>
-		<javac srcdir="./src" encoding="UTF-8" destdir="${tmpdir}" excludes="${javacexcludes}" listfiles="true" includeantruntime="false" debug="${javacdebug}">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="./env/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+	<target name="build-backend">
+		<echo>build backend</echo>
+		<mkdir dir="./tmp"/>
+		<javac
+				srcdir="./src"
+				encoding="UTF-8"
+				destdir="./tmp"
+				excludes="${javac.excludes}"
+				listfiles="true"
+				includeantruntime="false"
+				debug="${javac.debug}"
+				source="${javac.source}"
+				target="${javac.target}">
 			<classpath>
 				<fileset dir="./env">
 					<include name="*.jar"/>
 				</fileset>
 				<fileset dir="./lib">
 					<include name="*.jar"/>
-					<exclude name="${name}.jar"/>
+					<exclude name="${build.backend.filename}"/>
 				</fileset>
 			</classpath>
 		</javac>
-		<copy todir="${tmpdir}">
-			<fileset dir="./src" excludes="${javacexcludes},**/*.java"/>
+		<copy todir="./tmp">
+			<fileset dir="./src"/>
 		</copy>
-		<jar destfile="./lib/${name}.jar">
-			<fileset dir="${tmpdir}"/>
+		<jar destfile="./lib/${build.backend.filename}">
+			<fileset dir="./tmp" excludes="${jar.excludes}"/>
 		</jar>
-		<delete dir="${tmpdir}"/>
+		<delete dir="./tmp"/>
 	</target>
-	<target name="build-war" depends="build-jar">
-		<mkdir dir="${tmpdir}"/>
-		<java jar="./env/co.nsoli.frame-1.0.0.jar" fork="true" spawn="false" failonerror="true">
+	<target name="build-package">
+		<condition property="build.target" value="${build.default}">
+			<not>
+				<isset property="build.target" />
+			</not>
+		</condition>
+		<echo>build target: "${build.target}"</echo>
+		<propertycopy property="build.filename" from="build.package.${build.target}.filename"/>
+		<propertycopy property="build.architecture" from="build.package.${build.target}.architecture"/>
+		<condition property="argument.architecture" value="-arch" else="">
+			<not>
+				<length string="${build.architecture}" length="0"/>
+			</not>
+		</condition>
+		<propertycopy property="build.environment" from="build.package.${build.target}.environment"/>
+		<condition property="argument.environment" value="-env" else="">
+			<not>
+				<length string="${build.environment}" length="0"/>
+			</not>
+		</condition>
+		<echo>filename: "${build.filename}"</echo>
+		<mkdir dir="./tmp"/>
+		<java
+				jar="./env/co.nsoli.frame-1.0.0.jar"
+				fork="true"
+				spawn="false"
+				failonerror="true">
 			<arg value="-server"/>
-			<arg value="-base"/><arg value="./"/>
-			<arg value="-output"/><arg value="${tmpdir}"/>
+			<arg value="-base"/>
+			<arg value="./"/>
+			<arg value="-output"/>
+			<arg value="./tmp"/>
+			<arg value="${argument.architecture}"/>
+			<arg value="${build.architecture}"/>
+			<arg value="${argument.environment}"/>
+			<arg value="${build.environment}"/>
 		</java>
-		<mkdir dir="${tmpdir}/WEB-INF"/>
-		<copy file="web.${target}.xml" tofile="${tmpdir}/WEB-INF/web.xml"/>
-		<mkdir dir="${tmpdir}/WEB-INF/classes"/>
-		<mkdir dir="${tmpdir}/WEB-INF/lib"/>
-		<copy todir="${tmpdir}/WEB-INF/lib">
+		<mkdir dir="./tmp/WEB-INF"/>
+		<copy file="web.${build.target}.xml" tofile="./tmp/WEB-INF/web.xml"/>
+		<mkdir dir="./tmp/WEB-INF/classes"/>
+		<mkdir dir="./tmp/WEB-INF/lib"/>
+		<copy todir="./tmp/WEB-INF/lib">
 			<fileset dir="./lib">
 				<include name="*.jar"/>
 			</fileset>
 		</copy>
-		<jar destfile="./${target}.war" basedir="${tmpdir}"/>
-		<delete dir="${tmpdir}"/>
+		<jar destfile="./${build.filename}">
+			<fileset dir="./tmp" excludes="${war.excludes}"/>
+		</jar>
+		<delete dir="./tmp"/>
 	</target>
-	<target name="build-all">
-		<antcall target="build-war">
-			<param name="target" value="release"/>
-		</antcall>
-		<move file="release.war" tofile="${releasefilename}" />
-		<!-- antcall target="build-war">
-			<param name="target" value="develop"/>
-		</antcall -->
-		<!-- antcall target="build-war">
-			<param name="target" value="dummy"/>
-		</antcall -->
+	<target name="build-default" depends="build-backend">
+		<antcall target="build-package"/>
+	</target>
+	<target name="build-all" depends="build-backend">
+		<foreach list="${build.packages}" target="build-package" param="build.target"/>
 	</target>
 </project>

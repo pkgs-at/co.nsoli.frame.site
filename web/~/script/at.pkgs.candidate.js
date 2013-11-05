@@ -129,4 +129,103 @@
 		});
 		return _class_;
 	})(this);
+	this.OnceAfterAll = (function(_namespace_) {
+		var _class_;
+
+		_class_ = _namespace_.Object.extend((
+			/**
+			 * @since 0.1.6
+			 * @class at.pkgs.OnceAfterAll
+			 * @classdesc
+			 *     個別処理結果待ち合わせクラス.
+			 *     
+			 *     複数の個別処理の全数完了後に1回だけ処理を実行する.
+			 *     
+			 *     チュートリアル: {@tutorial at.pkgs.OnceAfterAll}
+			 * @extends {at.pkgs.Object}
+			 * @param {at.pkgs.OnceAfterAll=} instance インスタンス.
+			 */
+			function(instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+				instance.binder = new _namespace_.EventBinder();
+				instance.jobs = 0;
+				instance.succeed = true;
+			}
+		), { /* prototype */
+			/**
+			 * 個別処理結果待ち合わせクラスで完了後に実行する処理.
+			 * 
+			 * @since 0.1.6
+			 * @callback at.pkgs.OnceAfterAll~Operation
+			 * @param {Boolean} 処理結果フラグ.
+			 */
+			/**
+			 * 処理完了イベントバインダ.
+			 * 
+			 * 実行済みの場合はnull.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 * @type {at.pkgs.EventBinder}
+			 */			
+			binder: null,
+			/**
+			 * 実行中の個別処理の数.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 * @type {Number}
+			 */
+			jobs: null,
+			/**
+			 * 処理結果フラグ.
+			 * 
+			 * 失敗を報告した個別処理が一つでもあればfalse.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 * @type {Function}
+			 */
+			succeed: null,
+			/**
+			 * 完了後の処理を追加する.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 * @param {at.pkgs.OnceAfterAll~Operation} operation 完了後に実行する処理.
+			 */
+			bind: function(handler) {
+				this.binder.bind(handler);
+			},
+			/**
+			 * 個別処理結果の開始を通知する.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 */
+			enter: function() {
+				if (this.binder) this.jobs ++;
+			},
+			/**
+			 * 個別処理結果の完了を通知する.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 * @param {Boolean=} succeed falseを指定すると処理失敗となる.
+			 */
+			leave: function(succeed) {
+				var binder;
+
+				if (!this.binder) return;
+				if (succeed === false) this.succeed = false;
+				this.jobs --;
+				if (this.jobs > 0) return;
+				binder = this.binder;
+				this.binder = null;
+				binder.fire(this.succeed);
+			}
+		});
+		return _class_;
+	})(this);
 }).call(at.pkgs, this);

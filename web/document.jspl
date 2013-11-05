@@ -70,6 +70,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 				instance = instance || this;
 				this.parent.initialize(page, container, instance);
 				if (!this.immediate('initialize')) return;
+				instance.page.loading.enter();
 				instance.page.$documents.get(function($documents) {
 					var $index;
 					var _index;
@@ -78,6 +79,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 					_index = $index.at_pkgs_template();
 					$index.after(_index({
 						$documents: $documents }));
+					instance.page.loading.leave();
 				});
 			},
 			scene: function(name) {
@@ -107,7 +109,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 				instance = this;
 				$marked = $('._marked');
 				$marked.html(marked(data));
-				$marked.find('h1, h2, h3, h4, h5, h6').each(function() {
+				$marked.find(':header').each(function() {
 					var $this;
 
 					$this = $(this);
@@ -145,9 +147,11 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 				if (this.process) this.process.abort();
 				this.process = null;
 				path = 'document' + this.page.context.path + '/' + introduction + '.md';
+				this.page.loading.enter();
 				this.process = $.get(path, function(data) {
 					instance.process = null;
 					instance.render(data);
+					instance.page.loading.leave();
 				});
 			},
 			content: function($document) {
@@ -161,15 +165,18 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 				if (this.process) this.process.abort();
 				this.process = null;
 				path = 'document' + this.page.context.path + '.md';
+				this.page.loading.enter();
 				this.process = $.get(path, function(data) {
 					instance.process = null;
 					instance.render(data);
+					instance.page.loading.leave();
 				});
 			},
 			update: function() {
 				var instance;
 
 				instance = this;
+				instance.page.loading.enter();
 				this.page.$documents.get(function($documents) {
 					var path;
 					var selector;
@@ -177,6 +184,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 
 					if (!instance.page.context.path) {
 						instance.scene('root');
+						instance.page.loading.leave();
 						return;
 					}
 					path = instance.page.context.path;
@@ -187,13 +195,16 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 					$document = $documents.find(selector);
 					if ($document.length <= 0) {
 						instance.scene('not_found');
+						instance.page.loading.leave();
 						return;
 					}
 					if ($document.children('document').length > 0) {
 						instance.cover($document);
+						instance.page.loading.leave();
 						return;
 					}
 					instance.content($document);
+					instance.page.loading.leave();
 				});
 			}
 		});
@@ -256,6 +267,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 						instance.stage.section(instance.context.section);
 					}
 					if (instance.context.changed('path')) {
+						instance.loading.enter();
 						instance.$documents.get(function($documents) {
 							var $index;
 							var _index;
@@ -266,6 +278,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 							$index.after(_index({
 								$documents: $documents }));
 							instance.stage.update();
+							instance.loading.leave();
 						});
 					}
 				});

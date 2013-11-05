@@ -4,6 +4,8 @@
 
 .svn/
 consoliframe.local.properties
+co.nsoli.frame.*.war
+web/google*.html
 
 #################
 ## Eclipse
