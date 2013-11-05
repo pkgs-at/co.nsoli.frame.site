@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="build-default">
 	<property file="build.properties"/>
+	<property file="consoliframe.version.properties"/>
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
 			<pathelement location="./env/ant-contrib-1.0b3.jar"/>
@@ -60,7 +61,7 @@
 		<echo>filename: "${build.filename}"</echo>
 		<mkdir dir="./tmp"/>
 		<java
-				jar="./env/co.nsoli.frame-1.0.0.jar"
+				jar="./env/co.nsoli.frame-${consoliframe.version}.jar"
 				fork="true"
 				spawn="false"
 				failonerror="true">

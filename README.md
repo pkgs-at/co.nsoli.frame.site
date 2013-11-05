@@ -1,4 +1,4 @@
-[co.nsoli.frame](http://frame.nsoli.co)のサイトのソースコードです。
+[co.nsoli.frame](http://frame.nsoli.co)サイトのソースコードです。
 サンプルプロジェクトとしても使用します。
 
 詳細は上記サイトをご覧ください。
