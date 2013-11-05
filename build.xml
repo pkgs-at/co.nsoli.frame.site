@@ -47,17 +47,7 @@
 		<echo>build target: "${build.target}"</echo>
 		<propertycopy property="build.filename" from="build.package.${build.target}.filename"/>
 		<propertycopy property="build.architecture" from="build.package.${build.target}.architecture"/>
-		<condition property="argument.architecture" value="-arch" else="">
-			<not>
-				<length string="${build.architecture}" length="0"/>
-			</not>
-		</condition>
 		<propertycopy property="build.environment" from="build.package.${build.target}.environment"/>
-		<condition property="argument.environment" value="-env" else="">
-			<not>
-				<length string="${build.environment}" length="0"/>
-			</not>
-		</condition>
 		<echo>filename: "${build.filename}"</echo>
 		<mkdir dir="./tmp"/>
 		<java
@@ -65,14 +55,14 @@
 				fork="true"
 				spawn="false"
 				failonerror="true">
-			<arg value="-server"/>
+			<arg value="-batch"/>
 			<arg value="-base"/>
 			<arg value="./"/>
 			<arg value="-output"/>
 			<arg value="./tmp"/>
-			<arg value="${argument.architecture}"/>
+			<arg value="-arch"/>
 			<arg value="${build.architecture}"/>
-			<arg value="${argument.environment}"/>
+			<arg value="-env"/>
 			<arg value="${build.environment}"/>
 		</java>
 		<mkdir dir="./tmp/WEB-INF"/>

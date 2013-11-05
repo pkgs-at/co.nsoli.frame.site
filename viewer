@@ -1,4 +1,4 @@
 #!/bin/sh
 
 BASE=`dirname $0`
-java -jar "$BASE/env/co.nsoli.frame-1.0.0.jar" -base "$BASE"
+java -jar "$BASE/env/co.nsoli.frame-1.0.1.jar" -base "$BASE"

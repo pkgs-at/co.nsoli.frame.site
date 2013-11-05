@@ -89,7 +89,7 @@
 {%/*]]>*/%}</script>
 <script type="application/x-template" class="_scene _cover">{%/*<![CDATA[*/%}
 <section id="scene_cover" class="scene _scene">
-<h1>{= $document.attr('chapter') =}&nbsp;{= $document.attr('title') =}</h1>
+<h1 class="_document_title">{= $document.attr('chapter') =}&nbsp;{= $document.attr('title') =}</h1>
 <section class="marked section_index _section_index"></section>
 <section class="marked _marked"></section>
 <section id="cover_index">
@@ -139,16 +139,16 @@
 {%/*]]>*/%}</script>
 <script type="application/x-template" class="_scene _content">{%/*<![CDATA[*/%}
 <section id="scene_content" class="scene _scene">
-<h1>{= $document.attr('chapter') =}&nbsp;{= $document.attr('title') =}</h1>
+<h1 class="_document_title">{= $document.attr('chapter') =}&nbsp;{= $document.attr('title') =}</h1>
 <section class="marked section_index _section_index"></section>
 <section class="marked _marked"></section>
 </section><!-- #scene_content -->
 {%/*]]>*/%}</script>
 <section id="scene_root" class="scene">
-<h1>ドキュメントの一覧</h1>
+<h1 class="_document_title">ドキュメントの一覧</h1>
 </section><!-- #scene_root -->
 <section id="scene_not_found" class="scene">
-<h1>ドキュメントは削除されたか見つかりません</h1>
+<h1 class="_document_title">ドキュメントは削除されたか見つかりません</h1>
 </section><!-- #scene_not_found -->
 <script type="application/x-template" class="_index">{%/*<![CDATA[*/%}
 <section id="main_index" class="_index">

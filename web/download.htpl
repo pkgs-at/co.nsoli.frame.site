@@ -1,0 +1,64 @@
+[? extends layout.htpl ?]
+
+[? head_style { ?]
+[? base ?]
+<link rel="stylesheet" href="~/style/marked.css?[= tmpl.timestamp =]" media="all"/>
+[? } head_style ?]
+
+[? head_script { ?]
+[? base ?]
+<script src="~/script/marked-0.2.9.js?[= tmpl.timestamp =]"></script>
+[? } head_script ?]
+
+[? layout_body { ?]
+[? base ?]
+<h1>[= sitemap.page.title =]</h1>
+<script type="application/x-template" class="_content">{%/*<![CDATA[*/%}
+<div class="pure-g _content">
+<div class="pure-u-1-2">
+<div class="column left">
+<h2>スケルトンプロジェクト</h2>
+<p>新しいプロジェクトを開始するためのスケルトンプロジェクトです。</p>
+<dl>
+<dt>リリース {= version =}:</dt>
+<dd><ul>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.skeleton/archive/{= version =}.zip">co.nsoli.frame.skeleton-{= version =}.zip</a></li>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.skeleton/archive/{= version =}.tar.gz">co.nsoli.frame.skeleton-{= version =}.tar.gz</a></li>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.skeleton/tree/{= version =}">GitHub</a></li>
+</ul></dd>
+<dt>開発版:</dt>
+<dd><ul>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.skeleton/archive/master.zip">co.nsoli.frame.skeleton-master.zip</a></li>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.skeleton/archive/master.tar.gz">co.nsoli.frame.skeleton-master.tar.gz</a></li>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.skeleton">GitHub</a></li>
+</ul></dd>
+<dt><a href="https://github.com/pkgs-at/co.nsoli.frame.skeleton/releases">その他のリリース</a></dt>
+</dl>
+</div><!-- .column.left -->
+</div><!-- .pure-u-1-2 -->
+<div class="pure-u-1-2">
+<div class="column right">
+<h2>サンプルプロジェクト</h2>
+<p>このサイトのソースコード一式になります。<br/>ドキュメント内のチュートリアル等に使用します。</p>
+<dl>
+<dt>リリース  {= version =}:</dt>
+<dd><ul>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.site/archive/{= version =}.zip">co.nsoli.frame.site-{= version =}.zip</a></li>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.site/archive/{= version =}.tar.gz">co.nsoli.frame.site-{= version =}.tar.gz</a></li>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.site/tree/{= version =}">GitHub</a></li>
+</ul></dd>
+<dt>開発版:</dt>
+<dd><ul>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.site/archive/master.zip">co.nsoli.frame.site-master.zip</a></li>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.site/archive/master.tar.gz">co.nsoli.frame.site-master.tar.gz</a></li>
+<li><a href="https://github.com/pkgs-at/co.nsoli.frame.site">GitHub</a></li>
+</ul></dd>
+<dt><a href="https://github.com/pkgs-at/co.nsoli.frame.site/releases">その他のリリース</a></dt>
+</dl>
+</div><!-- .column.right -->
+</div><!-- .pure-u-1-2 -->
+</div><!-- .pure-g -->
+{%/*]]>*/%}</script>
+<h2>更新履歴</h2>
+<section class="marked changelog _changelog"></section>
+[? } layout_body ?]

@@ -51,6 +51,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 			function($element, instance) {
 				instance = instance || this;
 				this.parent.self($element, instance);
+				instance.window_title = $('title').html();
 				instance._section_index = instance.$.find('script._section_index').at_pkgs_template();
 				instance._back_to_top = instance.$.find('script._back_to_top').at_pkgs_template();
 				instance.$scene_cover = instance.$.find('script._scene._cover');
@@ -59,6 +60,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 				instance._scene_content = instance.$scene_content.at_pkgs_template();
 			}
 		), { /* prototype */
+			window_title: null,
 			_section_index: null,
 			_back_to_top: null,
 			$scene_cover: null,
@@ -85,6 +87,14 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 			scene: function(name) {
 				this.$.find('._scene:not(script)').remove();
 				this.$.replaceClass(/scene_.*/, 'scene_' + name);
+			},
+			title: function() {
+				var title;
+
+				title = this.$.find('._document_title:visible').text();
+				title += '&nbsp;|&nbsp;';
+				title += this.window_title;
+				$('title').html(title);
 			},
 			section: function(name) {
 				var id;
@@ -142,6 +152,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 				this.scene('cover');
 				this.$scene_cover.after(this._scene_cover({
 					$document: $document }));
+				this.title();
 				introduction = $document.attr('introduction');
 				if (!introduction) return;
 				if (this.process) this.process.abort();
@@ -162,6 +173,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 				this.scene('content');
 				this.$scene_content.after(this._scene_content({
 					$document: $document }));
+				this.title();
 				if (this.process) this.process.abort();
 				this.process = null;
 				path = 'document' + this.page.context.path + '.md';
@@ -184,6 +196,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 
 					if (!instance.page.context.path) {
 						instance.scene('root');
+						instance.title();
 						instance.page.loading.leave();
 						return;
 					}
@@ -195,6 +208,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 					$document = $documents.find(selector);
 					if ($document.length <= 0) {
 						instance.scene('not_found');
+						instance.title();
 						instance.page.loading.leave();
 						return;
 					}
