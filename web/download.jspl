@@ -27,7 +27,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 				instance = instance || this;
 				this.parent.self(context, instance);
 				instance.loading.enter();
-				$.get('http://rawgithub.com/pkgs-at/co.nsoli.frame.site/master/project.json', function(data) {
+				$.get('project.json', function(data) {
 					var $content;
 					var _content;
 
@@ -38,7 +38,7 @@ at.pkgs.Log.get('page').trap(function(_root_) {
 					instance.loading.leave();
 				});
 				instance.loading.enter();
-				$.get('http://rawgithub.com/pkgs-at/co.nsoli.frame.site/master/CHANGELOG.md', function(data) {
+				$.get('changelog.md', function(data) {
 					$('._changelog').html(marked(data)).find(':header').each(function() {
 						$(this).removeAttr('id');
 					});
